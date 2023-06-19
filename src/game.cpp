@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "game.hpp"
 
 Game::Game() {
@@ -14,15 +15,22 @@ void Game::start() {
 }
 
 void Game::nextTurn() {
-    int col = 0;
+    std::string col;
 
     switch (curPlayer) {
         case 1:
             std::cout << "Enter column: ";
-            while (!(std::cin >> col) || col < 1 || col > 7)
-                std::cout << "Enter column: ";
 
-            grid.dropChequer(col - 1, curPlayer);  // What if column overflows?
+            while (!(std::getline(std::cin, col)) ||
+                    col.length() != 1             || 
+                    !isdigit(col[0])              ||
+                    col[0] < intToCode(1)         ||
+                    col[0] > intToCode(7))
+            {
+                std::cout << "Enter column: ";
+            }
+
+            grid.dropChequer(codeToInt(col[0]) - 1, curPlayer);  // What if column overflows?
             curPlayer = 2;
             std::cout << "\n";
             break;
@@ -33,4 +41,12 @@ void Game::nextTurn() {
             curPlayer = 1;
             break;
     }
+}
+
+char Game::intToCode(int i) {
+    return i + 48;
+}
+
+int Game::codeToInt(char code) {
+    return code - 48;
 }
