@@ -15,32 +15,42 @@ void Game::start() {
 }
 
 void Game::nextTurn() {
-    std::string col;
+    bool overflow = false;
 
     switch (curPlayer) {
         case 1:
-            std::cout << "Enter column: ";
-
-            while (!(std::getline(std::cin, col)) ||
-                    col.length() != 1             || 
-                    !isdigit(col[0])              ||
-                    col[0] < intToCode(1)         ||
-                    col[0] > intToCode(7))
-            {
-                std::cout << "Enter column: ";
+            overflow = grid.dropChequer(prompt(), curPlayer);
+            while (overflow) {
+                std::cout << "That column is full...\n";
+                overflow = grid.dropChequer(prompt(), curPlayer);
             }
 
-            grid.dropChequer(codeToInt(col[0]) - 1, curPlayer);  // What if column overflows?
             curPlayer = 2;
             std::cout << "\n";
             break;
         
         case 2:
             std::cout << "\nComputer is thinking...\n";
-            grid.dropChequer(0, curPlayer);  // Use fixed column for now.
+            grid.dropChequer(1, curPlayer);  // Use fixed column for now.
             curPlayer = 1;
             break;
     }
+}
+
+int Game::prompt() {
+    std::string col;
+
+    std::cout << "Enter column: ";
+    while (!(std::getline(std::cin, col)) ||
+            col.length() != 1             || 
+            !isdigit(col[0])              ||
+            col[0] < intToCode(1)         ||
+            col[0] > intToCode(7))
+    {
+        std::cout << "Enter column: ";
+    }
+
+    return codeToInt(col[0]);
 }
 
 char Game::intToCode(int i) {

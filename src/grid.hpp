@@ -5,10 +5,12 @@ class Grid {
 public:
     Grid();
     void drawGrid();
-    void dropChequer(int col, int player);
+    bool dropChequer(int col, int player);
 
 private:
     int grid[6][7];
+
+    bool overflow(int col);
 };
 
 #endif

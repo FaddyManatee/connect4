@@ -35,7 +35,11 @@ void Grid::drawGrid() {
     std::cout << "\x1b[0m\n";
 }
 
-void Grid::dropChequer(int col, int player) {
+bool Grid::dropChequer(int col, int player) {
+    col--;
+    if (overflow(col))
+        return true;
+
     // Drop chequer to last free row.
     for (int y = 5; y >= 0; y--) {
         if (grid[y][col] == 0) {
@@ -43,4 +47,11 @@ void Grid::dropChequer(int col, int player) {
             break;
         }
     }
+    return false;
+}
+
+bool Grid::overflow(int col) {
+    if (grid[0][col] != 0)
+        return true;
+    return false;
 }

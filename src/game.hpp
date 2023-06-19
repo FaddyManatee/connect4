@@ -15,6 +15,7 @@ private:
     void nextTurn();
     char intToCode(int i);
     int codeToInt(char code);
+    int prompt();
 };
 
 #endif
