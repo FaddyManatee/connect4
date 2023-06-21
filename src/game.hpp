@@ -13,9 +13,9 @@ private:
     int curPlayer;
 
     void nextTurn();
-    char intToCode(int i);
-    int codeToInt(char code);
     int prompt();
+    inline char intToCode(int i);
+    inline int codeToInt(char code);
 };
 
 #endif

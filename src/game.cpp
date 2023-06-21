@@ -8,9 +8,27 @@ Game::Game() {
 }
 
 void Game::start() {
-    while (true) {
+    int result = 0;
+
+    while (result == 0) {
         grid.drawGrid();
         nextTurn();
+        result = grid.outcome();
+    }
+    grid.drawGrid();
+
+    switch (result) {
+        case 1:
+            std::cout << "You won!\n";
+            break;
+        
+        case 2:
+            std::cout << "Computer won!\n";
+            break;
+
+        case 3:
+            std::cout << "Draw!\n";
+            break;
     }
 }
 
@@ -53,10 +71,10 @@ int Game::prompt() {
     return codeToInt(col[0]);
 }
 
-char Game::intToCode(int i) {
+inline char Game::intToCode(int i) {
     return i + 48;
 }
 
-int Game::codeToInt(char code) {
+inline int Game::codeToInt(char code) {
     return code - 48;
 }
