@@ -48,9 +48,9 @@ int Grid::outcome() {
     int player = grid[lastPos.row][lastPos.col];
     
     // Count horizontal.
-    if (countHoriz(lastPos.row, lastPos.col, player) >= 4 ||
-        countVert(lastPos.row, lastPos.col, player) >= 4  ||
-        countDiag(lastPos.row, lastPos.col, player) >= 4)
+    if (winHoriz(player) ||
+        winVert(player)  ||
+        winDiag(player))
     {
         return player;
     }
@@ -65,8 +65,10 @@ int Grid::lastColumn() {
     return lastPos.col + 1;
 }
 
-int Grid::countHoriz(int row, int col, int player) {
+bool Grid::winHoriz(int player) {
     int found = 0;
+    int row = lastPos.row;
+    int col = lastPos.col;
 
     for (int x = col; x < width; x++) {
         if (grid[row][x] == player)
@@ -82,11 +84,13 @@ int Grid::countHoriz(int row, int col, int player) {
             break;
     }
 
-    return found - 1;  // -1 since last dropped chequer was counted twice.
+    return found - 1 == 4;  // -1 since last dropped chequer was counted twice.
 }
 
-int Grid::countVert(int row, int col, int player) {
+bool Grid::winVert(int player) {
     int found = 0;
+    int row = lastPos.row;
+    int col = lastPos.col;
 
     for (int x = row; x < height; x++) {
         if (grid[x][col] == player)
@@ -102,11 +106,13 @@ int Grid::countVert(int row, int col, int player) {
             break;
     }
 
-    return found - 1;  // -1 since last dropped chequer was counted twice.
+    return found - 1 == 4;  // -1 since last dropped chequer was counted twice.
 }
 
-int Grid::countDiag(int row, int col, int player) {
+bool Grid::winDiag(int player) {
     int found = 0;
+    int row = lastPos.row;
+    int col = lastPos.col;
 
     for (int x = row, y = col; x < height && y < width; x++, y++) {
         if (grid[x][y] == player)
@@ -136,7 +142,7 @@ int Grid::countDiag(int row, int col, int player) {
             break;
     }
 
-    return found - 3;  // -3 since last dropped chequer was counted four times.
+    return found - 3 == 4;  // -3 since last dropped chequer was counted four times.
 }
 
 bool Grid::dropChequer(int col, int player) {

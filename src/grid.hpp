@@ -7,14 +7,14 @@ typedef struct {
 } Position;
 
 class Grid {
-public:
+  public:
     Grid();
     void drawGrid();
     bool dropChequer(int col, int player);
     int outcome();
     int lastColumn();
 
-private:
+  private:
     int height;
     int width;
     int grid[6][7];
@@ -22,9 +22,9 @@ private:
     Position lastPos;
 
     bool overflow(int col);
-    int countHoriz(int row, int col, int player);
-    int countVert(int row, int col, int player);
-    int countDiag(int row, int col, int player);
+    bool winHoriz(int player);
+    bool winVert(int player);
+    bool winDiag(int player);
 };
 
 #endif
