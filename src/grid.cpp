@@ -1,5 +1,6 @@
 #include <iostream>
-#include "grid.hpp"
+
+#include "../include/grid.hpp"
 
 Grid::Grid() {
     height = 6;

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
-#include "game.hpp"
+
+#include "../include/game.hpp"
 
 Game::Game() {
     grid = Grid();

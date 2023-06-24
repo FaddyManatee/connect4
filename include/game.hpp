@@ -4,11 +4,11 @@
 #include "grid.hpp"
 
 class Game {
-public:
+  public:
     Game();
     void start();
 
-private:
+  private:
     Grid grid;
     int curPlayer;
 
