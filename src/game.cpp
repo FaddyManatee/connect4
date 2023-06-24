@@ -49,7 +49,7 @@ void Game::nextTurn() {
         
         case 2:
             std::cout << "\nComputer is thinking...\n";
-            grid.dropChequer(1, curPlayer);  // Use fixed column for now.
+            grid.dropChequer(grid.lastColumn() - 1, curPlayer);  // Use fixed column for now.
             curPlayer = 1;
             break;
     }

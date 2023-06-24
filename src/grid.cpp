@@ -45,22 +45,24 @@ int Grid::outcome() {
     // Game won by yellow: 2
     // Game draw:          3
     
-    int player = grid[lastPos[0]][lastPos[1]];
+    int player = grid[lastPos.row][lastPos.col];
     
     // Count horizontal.
-    if (countHoriz(lastPos[0], lastPos[1], player) >= 4 ||
-        countVert(lastPos[0], lastPos[1], player) >= 4)
+    if (countHoriz(lastPos.row, lastPos.col, player) >= 4 ||
+        countVert(lastPos.row, lastPos.col, player) >= 4  ||
+        countDiag(lastPos.row, lastPos.col, player) >= 4)
     {
         return player;
     }
-
-    // Check vertical.
-    // Check diagonal.
 
     if (numPlaced == height * width)
         return 3;
     
     return 0;
+}
+
+int Grid::lastColumn() {
+    return lastPos.col + 1;
 }
 
 int Grid::countHoriz(int row, int col, int player) {
@@ -103,8 +105,44 @@ int Grid::countVert(int row, int col, int player) {
     return found - 1;  // -1 since last dropped chequer was counted twice.
 }
 
+int Grid::countDiag(int row, int col, int player) {
+    int found = 0;
+
+    for (int x = row, y = col; x < height && y < width; x++, y++) {
+        if (grid[x][y] == player)
+            found++;
+        else
+            break;
+    }
+
+    for (int x = row, y = col; x < height && y >= 0; x++, y--) {
+        if (grid[x][y] == player)
+            found++;
+        else
+            break;
+    }
+
+    for (int x = row, y = col; x >= 0 && y >= 0; x--, y--) {
+        if (grid[x][y] == player)
+            found++;
+        else
+            break;
+    }
+
+    for (int x = row, y = col; x >= 0 && y < width; x--, y++) {
+        if (grid[x][y] == player)
+            found++;
+        else
+            break;
+    }
+
+    return found - 3;  // -3 since last dropped chequer was counted four times.
+}
+
 bool Grid::dropChequer(int col, int player) {
-    col--;
+    if (col > 0)
+        col--;
+    
     if (overflow(col))
         return true;
 
@@ -112,8 +150,8 @@ bool Grid::dropChequer(int col, int player) {
     for (int y = height - 1; y >= 0; y--) {
         if (grid[y][col] == 0) {
             grid[y][col] = player;
-            lastPos[0] = y;
-            lastPos[1] = col;
+            lastPos.row = y;
+            lastPos.col = col;
             numPlaced++;
             break;
         }

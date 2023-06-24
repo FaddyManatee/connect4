@@ -14,8 +14,8 @@ private:
 
     void nextTurn();
     int prompt();
-    inline char intToCode(int i);
-    inline int codeToInt(char code);
+    int codeToInt(char code);
+    char intToCode(int i);
 };
 
 #endif
