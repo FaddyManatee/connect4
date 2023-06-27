@@ -10,12 +10,13 @@ class StateTree {
     ~StateTree();
 
   private:
-    int value;
+    int score;
     int ply;
     Grid state;
     StateTree* child[7];
 
     void expand(int maxPly);
+    void evaluate();
 };
 
 #endif

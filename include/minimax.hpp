@@ -8,8 +8,12 @@ class Minimax {
     Minimax() {};
     Minimax(Grid g, int ply);
 
+    int minimize();
+
   private:
     StateTree root;
+
+    void prune();
 };
 
 #endif

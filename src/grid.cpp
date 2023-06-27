@@ -150,9 +150,7 @@ int Grid::countDiag() {
     return found - 3;  // -3 since last dropped chequer was counted four times.
 }
 
-bool Grid::dropChequer(int col) {
-    col--;
-    
+bool Grid::dropChequer(int col) {    
     if (overflow(col))
         return true;
 

@@ -5,7 +5,7 @@
 
 Game::Game() {
     grid = Grid();
-    m = Minimax(grid, 6);
+    m = Minimax(grid, 7);
 }
 
 void Game::start() {
@@ -48,7 +48,7 @@ int Game::nextTurn() {
         
         case Player::YELLOW:
             std::cout << "\nComputer is thinking...\n";
-            grid.dropChequer(1);  // Use fixed column for now.
+            grid.dropChequer(m.minimize());
             break;
     }
 
@@ -71,7 +71,7 @@ int Game::prompt() {
         std::cout << "Enter column: ";
     }
 
-    return codeToInt(col[0]);
+    return codeToInt(col[0]) - 1;
 }
 
 char Game::intToCode(int i) {
