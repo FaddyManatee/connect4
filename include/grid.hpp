@@ -6,25 +6,29 @@ typedef struct {
     int col;
 } Position;
 
+enum Player { NONE, RED, YELLOW };
+
 class Grid {
   public:
     Grid();
     void drawGrid();
-    bool dropChequer(int col, int player);
+    void nextPlayer();
+    bool dropChequer(int col);
     int outcome();
-    int lastColumn();
+    int curPlayer();
 
   private:
     int height;
     int width;
     int grid[6][7];
     int numPlaced;
+    int player;
     Position lastPos;
 
     bool overflow(int col);
-    bool winHoriz(int player);
-    bool winVert(int player);
-    bool winDiag(int player);
+    int countHoriz();
+    int countVert();
+    int countDiag();
 };
 
 #endif

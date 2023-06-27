@@ -10,9 +10,8 @@ class Game {
 
   private:
     Grid grid;
-    int curPlayer;
 
-    void nextTurn();
+    int nextTurn();
     int prompt();
     int codeToInt(char code);
     char intToCode(int i);

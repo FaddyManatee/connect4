@@ -1,18 +1,23 @@
 #ifndef STATETREE_H
 #define STATETREE_H
 
+#include <queue>
+
 #include "grid.hpp"
 
 class StateTree {
   public:
-    StateTree(const Grid& g);
-    StateTree(StateTree& t);
+    StateTree() {};
+    StateTree(const Grid& g, int ply);
+    ~StateTree();
 
   private:
+    int value;
+    int ply;
     Grid state;
     StateTree* child[7];
 
-    void growTree();
+    void expand(std::queue<StateTree*>& q, int maxPly);
 };
 
 #endif

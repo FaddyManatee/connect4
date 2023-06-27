@@ -5,12 +5,15 @@
 Grid::Grid() {
     height = 6;
     width = 7;
+    numPlaced = 0;
+    lastPos.row = 0;
+    lastPos.col = 0;
+    player = Player::RED;
 
     for (int x = 0; x < height; x++) {
         for (int y = 0; y < width; y++)
-            grid[x][y] = 0;
+            grid[x][y] = Player::NONE;
     }
-    numPlaced = 0;
 }
 
 void Grid::drawGrid() {
@@ -20,11 +23,11 @@ void Grid::drawGrid() {
 
         for (int y = 0; y < width; y++) {
             switch (grid[x][y]) {
-                case 1:
+                case Player::RED:
                     std::cout << "\x1b[44m  \x1b[41m  ";  // Red.
                     break;
                 
-                case 2:
+                case Player::YELLOW:
                     std::cout << "\x1b[44m  \x1b[43m  ";  // Yellow.
                     break;
                 
@@ -46,12 +49,10 @@ int Grid::outcome() {
     // Game won by yellow: 2
     // Game draw:          3
     
-    int player = grid[lastPos.row][lastPos.col];
-    
     // Count horizontal.
-    if (winHoriz(player) ||
-        winVert(player)  ||
-        winDiag(player))
+    if (countHoriz() == 4 ||
+        countVert() == 4  ||
+        countDiag() == 4)
     {
         return player;
     }
@@ -62,55 +63,58 @@ int Grid::outcome() {
     return 0;
 }
 
-int Grid::lastColumn() {
-    return lastPos.col + 1;
+void Grid::nextPlayer() {
+    if (player == Player::RED)
+        player = Player::YELLOW;
+    else
+        player = Player::RED;
 }
 
-bool Grid::winHoriz(int player) {
+int Grid::curPlayer() {
+    return player;
+}
+
+int Grid::countHoriz() {
     int found = 0;
-    int row = lastPos.row;
-    int col = lastPos.col;
 
-    for (int x = col; x < width; x++) {
-        if (grid[row][x] == player)
+    for (int x = lastPos.col; x < width; x++) {
+        if (grid[lastPos.row][x] == player)
             found++;
         else
             break;
     }
 
-    for (int x = col; x >= 0; x--) {
-        if (grid[row][x] == player)
+    for (int x = lastPos.col; x >= 0; x--) {
+        if (grid[lastPos.row][x] == player)
             found++;
         else
             break;
     }
 
-    return found - 1 == 4;  // -1 since last dropped chequer was counted twice.
+    return found - 1;  // -1 since last dropped chequer was counted twice.
 }
 
-bool Grid::winVert(int player) {
+int Grid::countVert() {
     int found = 0;
-    int row = lastPos.row;
-    int col = lastPos.col;
 
-    for (int x = row; x < height; x++) {
-        if (grid[x][col] == player)
+    for (int x = lastPos.row; x < height; x++) {
+        if (grid[x][lastPos.col] == player)
             found++;
         else
             break;
     }
 
-    for (int x = row; x >= 0; x--) {
-        if (grid[x][col] == player)
+    for (int x = lastPos.row; x >= 0; x--) {
+        if (grid[x][lastPos.col] == player)
             found++;
         else
             break;
     }
 
-    return found - 1 == 4;  // -1 since last dropped chequer was counted twice.
+    return found - 1;  // -1 since last dropped chequer was counted twice.
 }
 
-bool Grid::winDiag(int player) {
+int Grid::countDiag() {
     int found = 0;
     int row = lastPos.row;
     int col = lastPos.col;
@@ -143,12 +147,11 @@ bool Grid::winDiag(int player) {
             break;
     }
 
-    return found - 3 == 4;  // -3 since last dropped chequer was counted four times.
+    return found - 3;  // -3 since last dropped chequer was counted four times.
 }
 
-bool Grid::dropChequer(int col, int player) {
-    if (col > 0)
-        col--;
+bool Grid::dropChequer(int col) {
+    col--;
     
     if (overflow(col))
         return true;

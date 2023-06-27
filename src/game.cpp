@@ -5,7 +5,6 @@
 
 Game::Game() {
     grid = Grid();
-    curPlayer = 1;
 }
 
 void Game::start() {
@@ -13,17 +12,16 @@ void Game::start() {
 
     while (result == 0) {
         grid.drawGrid();
-        nextTurn();
-        result = grid.outcome();
+        result = nextTurn();
     }
     grid.drawGrid();
 
     switch (result) {
-        case 1:
+        case Player::RED:
             std::cout << "You won!\n";
             break;
         
-        case 2:
+        case Player::YELLOW:
             std::cout << "Computer won!\n";
             break;
 
@@ -33,27 +31,30 @@ void Game::start() {
     }
 }
 
-void Game::nextTurn() {
+int Game::nextTurn() {
     bool overflow = false;
 
-    switch (curPlayer) {
-        case 1:
-            overflow = grid.dropChequer(prompt(), curPlayer);
+    switch (grid.curPlayer()) {
+        case Player::RED:
+            overflow = grid.dropChequer(prompt());
             while (overflow) {
                 std::cout << "That column is full...\n";
-                overflow = grid.dropChequer(prompt(), curPlayer);
+                overflow = grid.dropChequer(prompt());
             }
 
-            curPlayer = 2;
             std::cout << "\n";
             break;
         
-        case 2:
+        case Player::YELLOW:
             std::cout << "\nComputer is thinking...\n";
-            grid.dropChequer(grid.lastColumn() - 1, curPlayer);  // Use fixed column for now.
-            curPlayer = 1;
+            grid.dropChequer(1);  // Use fixed column for now.
             break;
     }
+
+    int result = grid.outcome();
+    grid.nextPlayer();
+
+    return result;
 }
 
 int Game::prompt() {
@@ -61,8 +62,8 @@ int Game::prompt() {
 
     std::cout << "Enter column: ";
     while (!(std::getline(std::cin, col)) ||
-            col.length() != 1             || 
             !isdigit(col[0])              ||
+            col.length() != 1             ||
             col[0] < intToCode(1)         ||
             col[0] > intToCode(7))
     {
@@ -72,10 +73,10 @@ int Game::prompt() {
     return codeToInt(col[0]);
 }
 
-inline char Game::intToCode(int i) {
+char Game::intToCode(int i) {
     return i + 48;
 }
 
-inline int Game::codeToInt(char code) {
+int Game::codeToInt(char code) {
     return code - 48;
 }
