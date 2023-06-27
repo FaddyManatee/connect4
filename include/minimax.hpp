@@ -5,6 +5,7 @@
 
 class Minimax {
   public:
+    Minimax() {};
     Minimax(Grid g, int ply);
 
   private:

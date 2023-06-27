@@ -1,8 +1,6 @@
 #ifndef STATETREE_H
 #define STATETREE_H
 
-#include <queue>
-
 #include "grid.hpp"
 
 class StateTree {
@@ -17,7 +15,7 @@ class StateTree {
     Grid state;
     StateTree* child[7];
 
-    void expand(std::queue<StateTree*>& q, int maxPly);
+    void expand(int maxPly);
 };
 
 #endif

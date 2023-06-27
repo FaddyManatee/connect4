@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "grid.hpp"
+#include "minimax.hpp"
 
 class Game {
   public:
@@ -10,6 +11,7 @@ class Game {
 
   private:
     Grid grid;
+    Minimax m;
 
     int nextTurn();
     int prompt();

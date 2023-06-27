@@ -15,6 +15,9 @@ class Grid {
     void nextPlayer();
     bool dropChequer(int col);
     int outcome();
+    int countHoriz();
+    int countVert();
+    int countDiag();
     int curPlayer();
 
   private:
@@ -26,9 +29,6 @@ class Grid {
     Position lastPos;
 
     bool overflow(int col);
-    int countHoriz();
-    int countVert();
-    int countDiag();
 };
 
 #endif

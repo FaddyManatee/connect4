@@ -1,28 +1,31 @@
+#include <queue>
+
 #include "../include/statetree.hpp"
 
 StateTree::StateTree(const Grid& g, int ply) {
     value = 0;
     this->ply = 0;
     state = g;
-    std::queue<StateTree*> q;
 
     for (int x = 0; x < 7; x++)
         child[x] = nullptr;
 
-    expand(q, ply);
+    expand(ply);
 }
 
-void StateTree::expand(std::queue<StateTree*>& q, int maxPly) {
+void StateTree::expand(int maxPly) {
     auto expand = this;
+    std::queue<StateTree*> q;
 
     while (expand->ply < maxPly) {    
         for (int x = 0; x < 7; x++) {
             auto st = new StateTree(*expand);
-            child[x] = st;
-            child[x]->ply = expand->ply + 1;
+            expand->child[x] = st;
+            expand->child[x]->ply = expand->ply + 1;
 
             st->state.dropChequer(x + 1);
-            // TODO: Don't push state to queue if its a final game state.
+            st->state.nextPlayer();
+            // Don't push state to queue if its a final game state.
             if (st->state.outcome() == 0)
                 q.push(st);
         }

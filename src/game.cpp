@@ -5,6 +5,7 @@
 
 Game::Game() {
     grid = Grid();
+    m = Minimax(grid, 6);
 }
 
 void Game::start() {
