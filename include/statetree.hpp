@@ -3,6 +3,12 @@
 
 #include "grid.hpp"
 
+typedef struct {
+    int local;
+    int minimax;
+    int col;
+} Score;
+
 class StateTree {
   public:
     StateTree() {};
@@ -10,12 +16,14 @@ class StateTree {
     ~StateTree();
 
   private:
-    int score;
     int ply;
+    bool isLeaf;
+    Score score;
     Grid state;
     StateTree* child[7];
 
     void expand(int maxPly);
+    void calcScore();
     void evaluate();
 };
 
