@@ -13,7 +13,7 @@ Minimax::Minimax(const Grid& grid, int depth) {
 }
 
 Minimax::~Minimax() {
-  // TODO: Delete this state and all descendants.
+  delete this->root;
 }
 
 void Minimax::update(int column) {
@@ -25,7 +25,6 @@ void Minimax::update(int column) {
 
     if (child->get_column() == column) {
       this->state = child;
-      // TODO: This is now the root. Delete all non-descendant states.
       break;
     }
   }
@@ -52,8 +51,6 @@ int Minimax::minimise() {
 
   this->state = min_state;
 
-  // TODO: This is now the root. Delete all non-descendant states.
-  
   std::cout << "Computer: \"MINIMISING the score to " << this->state->get_score();
   std::cout << " (column=" << this->state->get_column() + 1 << ")\"" << std::endl;
 
@@ -78,8 +75,6 @@ int Minimax::maximise() {
   }
 
   this->state = max_state;
-
-  // TODO: This is now the root. Delete all non-descendant states.
 
   std::cout << "Computer: \"MAXIMISING the score to " << this->state->get_score();
   std::cout << " (column=" << this->state->get_column() + 1 << ")\"" << std::endl;

@@ -11,6 +11,16 @@ State::State(const Grid& grid) {
   this->column = 0;
 }
 
+State::~State() {
+  for (int x = 0; x < this->get_n_children(); ++x) {
+    auto child = this->children.at(x);
+    if (child != NULL) {
+      delete child;
+      child = NULL;
+    }
+  }
+}
+
 void State::compute_score() {
   if (this->grid.find_win(Player::RED)) {
     this->score = std::numeric_limits<int>::max();
@@ -45,7 +55,7 @@ void State::compute_score() {
 }
 
 State *State::child_at(int x) const {
-  return this->children[x];
+  return this->children.at(x);
 }
 
 void State::print() const {

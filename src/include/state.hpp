@@ -7,6 +7,7 @@
 class State {
   public:
     State(const Grid& grid);
+    ~State();
 
     State *child_at(int x)  const;
     void   print()          const;
