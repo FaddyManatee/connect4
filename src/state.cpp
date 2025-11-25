@@ -4,6 +4,12 @@
 #include "include/state.hpp"
 #include "include/grid.hpp"
 
+State::State() {
+  this->ply    = 0;
+  this->score  = 0;
+  this->column = 0;
+}
+
 State::State(const Grid& grid) {
   this->grid   = grid;
   this->ply    = 0;
@@ -14,10 +20,8 @@ State::State(const Grid& grid) {
 State::~State() {
   for (int x = 0; x < this->get_n_children(); ++x) {
     auto child = this->children.at(x);
-    if (child != NULL) {
-      delete child;
-      child = NULL;
-    }
+    if (child != NULL)
+      delete child; 
   }
 }
 
@@ -32,7 +36,7 @@ void State::compute_score() {
     return;
   }
 
-  if (this->grid.is_full()) {
+  if (this->grid.is_grid_full()) {
     this->score = 0;
     return;
   }
@@ -56,6 +60,14 @@ void State::compute_score() {
 
 State *State::child_at(int x) const {
   return this->children.at(x);
+}
+
+Player State::get_player() const {
+  return this->grid.get_player();
+}
+
+Result State::get_result() const {
+  return this->grid.get_result();
 }
 
 void State::print() const {
@@ -90,7 +102,7 @@ int State::expand(int n_ply) {
   // Expand the state recursively.
   for (int x = 0; x < 7; ++x) {
     // Prevent adding chequers to full columns.
-    if (this->grid.will_overflow(x))
+    if (this->grid.is_column_full(x))
       continue;
 
     auto new_state = new State(this->grid);

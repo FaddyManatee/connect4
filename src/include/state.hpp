@@ -6,20 +6,21 @@
 
 class State {
   public:
+    State();
     State(const Grid& grid);
     ~State();
 
-    State *child_at(int x)  const;
-    void   print()          const;
-    int    get_n_children() const;
-    int    get_column()     const;
-    int    get_score()      const;
+    State  *child_at(int x)  const;
+    Player  get_player()     const;
+    Result  get_result()     const;
+    void    print()          const;
+    int     get_n_children() const;
+    int     get_column()     const;
+    int     get_score()      const;
 
     int    expand(int n_ply);
 
   private:
-    State() = delete;
-
     std::vector<State*> children;
     Grid grid;
     int  ply;

@@ -5,43 +5,40 @@
 #include "include/minimax.hpp"
 
 Game::Game() {
-  this->grid    = new Grid();
-  this->minimax = new Minimax(*this->grid, 8);
+  this->minimax = new Minimax(8);
 }
 
 Game::~Game() {
-  delete this->grid;
   delete this->minimax;
 }
 
 Result Game::play_turn() {
-  bool overflow = false;
+  bool success  = true;
   int  column   = -1;
 
-  switch (this->grid->get_current_player()) {
+  switch (this->minimax->get_current_player()) {
     case Player::RED:
       column = prompt();
-      overflow = this->grid->drop_chequer(column);
-      while (overflow) {
+      success = this->minimax->update(column);
+      while (!success) {
         std::cout << "That column is full...\n";
         column = prompt();
-        overflow = this->grid->drop_chequer(column);
+        success = this->minimax->update(column);
       }
 
-      this->minimax->update(column);
       std::cout << "\n";
       break;
         
       case Player::YELLOW:
         std::cout << "\nComputer is thinking...\n";
-        this->grid->drop_chequer(this->minimax->minimise());
+        this->minimax->minimise();
         break;
 
       default:
         break;
   }
 
-  return this->grid->get_result();
+  return this->minimax->get_current_result();
 }
 
 char Game::int_to_char(int i) {
@@ -74,11 +71,11 @@ void Game::start() {
   Result result;
 
   do {
-    this->grid->print();
+    this->minimax->print_state();
     result = this->play_turn();
   } while (result == Result::PENDING);
 
-  this->grid->print();
+  this->minimax->print_state();
 
   switch (result) {
     case Result::RED:

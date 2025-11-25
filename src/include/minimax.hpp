@@ -5,12 +5,16 @@
 
 class Minimax {
   public:
-    Minimax(const Grid& grid, int depth);
+    Minimax(int depth);
     ~Minimax();
 
-    void update(int column);
-    int  minimise();
-    int  maximise();
+    Player get_current_player() const;
+    Result get_current_result() const;
+    void   print_state()        const;
+
+    void minimise();
+    void maximise();
+    bool update(int column);
 
   private:
     Minimax() = delete;

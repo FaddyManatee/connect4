@@ -27,7 +27,7 @@ Player Grid::chequer_at(int row, int column) const {
   return this->grid[row][column];
 }
 
-Player Grid::get_current_player() const {
+Player Grid::get_player() const {
   return this->player;
 }
 
@@ -82,20 +82,20 @@ bool Grid::find_win(Player player) const {
   return false;
 }
 
-bool Grid::will_overflow(int column) const {
+bool Grid::is_column_full(int column) const {
   if (this->grid[0][column] != Player::NONE)
     return true;
   return false;
 }
 
-bool Grid::is_full() const {
+bool Grid::is_grid_full() const {
   if (this->n_placed == this->width * this->height)
     return true;
   return false;
 }
 
 bool Grid::drop_chequer(int column) {    
-  if (this->will_overflow(column))
+  if (this->is_column_full(column))
     return true;
 
   // Drop chequer to last free row.

@@ -2,10 +2,11 @@
 #include <limits>
 
 #include "include/minimax.hpp"
+#include "include/grid.hpp"
 
-Minimax::Minimax(const Grid& grid, int depth) {
+Minimax::Minimax(int depth) {
   // Build state tree.
-  this->root  = new State(grid);
+  this->root  = new State();
   this->root->expand(depth);
 
   this->state = this->root;
@@ -16,23 +17,19 @@ Minimax::~Minimax() {
   delete this->root;
 }
 
-void Minimax::update(int column) {
-  if (this->state->get_n_children() == 0)
-    this->state->expand(this->depth);
-
-  for (int x = 0; x < this->state->get_n_children(); ++x) {
-    auto child = this->state->child_at(x);
-
-    if (child->get_column() == column) {
-      this->state = child;
-      break;
-    }
-  }
-
-  std::cout << "Score: " << this->state->get_score() << std::endl;
+Player Minimax::get_current_player() const {
+  return this->state->get_player();
 }
 
-int Minimax::minimise() {
+Result Minimax::get_current_result() const {
+  return this->state->get_result();
+}
+
+void Minimax::print_state() const {
+  this->state->print();
+}
+
+void Minimax::minimise() {
   if (this->state->get_n_children() == 0)
     this->state->expand(this->depth);
 
@@ -53,11 +50,9 @@ int Minimax::minimise() {
 
   std::cout << "Computer: \"MINIMISING the score to " << this->state->get_score();
   std::cout << " (column=" << this->state->get_column() + 1 << ")\"" << std::endl;
-
-  return this->state->get_column();
 }
 
-int Minimax::maximise() {
+void Minimax::maximise() {
   if (this->state->get_n_children() == 0)
     this->state->expand(this->depth);
 
@@ -78,7 +73,24 @@ int Minimax::maximise() {
 
   std::cout << "Computer: \"MAXIMISING the score to " << this->state->get_score();
   std::cout << " (column=" << this->state->get_column() + 1 << ")\"" << std::endl;
+}
 
-  return this->state->get_column();
+bool Minimax::update(int column) {
+  if (this->state->get_n_children() == 0)
+    this->state->expand(this->depth);
+
+  for (int x = 0; x < this->state->get_n_children(); ++x) {
+    auto child = this->state->child_at(x);
+
+    if (child->get_column() == column) {
+      this->state = child;
+
+      std::cout << "Score: " << this->state->get_score() << std::endl;
+
+      return true;
+    }
+  }
+
+  return false;
 }
 

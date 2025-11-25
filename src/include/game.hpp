@@ -1,7 +1,6 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "grid.hpp"
 #include "minimax.hpp"
 
 class Game {
@@ -12,7 +11,6 @@ class Game {
     void start();
 
   private:
-    Grid    *grid;
     Minimax *minimax;
 
     Result play_turn();
