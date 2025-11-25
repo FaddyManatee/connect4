@@ -1,25 +1,40 @@
-connect4: main.o game.o grid.o statetree.o minimax.o
-	g++ bin/main.o bin/game.o bin/grid.o bin/statetree.o bin/minimax.o -o bin/connect4 -g
+# Compiler and flags.
+CXX := g++
+CXXFLAGS := -I src/include -MMD -MP
+DBGFLAGS := -g -O0 -DDEBUG
 
-clean: 
-	rm -rf bin/
+# Directories.
+SRC_DIR := src
+BIN_DIR := bin
 
-main.o: src/main.cpp
-	mkdir -p bin/
-	g++ src/main.cpp -c -o bin/main.o -g
+# Sources and objects.
+SRCS := $(wildcard $(SRC_DIR)/*.cpp)
+OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(BIN_DIR)/%.o,$(SRCS))
+DEPS := $(OBJS:.o=.d)
 
-game.o: src/game.cpp include/game.hpp
-	mkdir -p bin/
-	g++ src/game.cpp -c -o bin/game.o -g
+# Output binary.
+TARGET := $(BIN_DIR)/connect4
+DEBUG_TARGET := $(BIN_DIR)/connect4-debug
 
-grid.o: src/grid.cpp include/grid.hpp
-	mkdir -p bin/
-	g++ src/grid.cpp -c -o bin/grid.o -g
+.PHONY: all clean debug
 
-minimax.o: src/minimax.cpp include/minimax.hpp
-	mkdir -p bin/
-	g++ src/minimax.cpp -c -o bin/minimax.o -g
+all: $(TARGET)
 
-statetree.o: src/statetree.cpp include/statetree.hpp
-	mkdir -p bin/
-	g++ src/statetree.cpp -c -o bin/statetree.o -g
+debug: CXXFLAGS += $(DBGFLAGS)
+debug: $(DEBUG_TARGET)
+
+$(TARGET): $(OBJS)
+	$(CXX) $(OBJS) -o $@
+
+$(DEBUG_TARGET): $(OBJS)
+	$(CXX) $(OBJS) -o $@
+
+# Pattern rule for object files.
+$(BIN_DIR)/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -rf $(BIN_DIR)
+
+-include $(DEPS)

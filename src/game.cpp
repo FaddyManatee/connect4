@@ -1,83 +1,100 @@
 #include <iostream>
 #include <string>
 
-#include "../include/game.hpp"
+#include "include/game.hpp"
+#include "include/minimax.hpp"
 
 Game::Game() {
-    grid = Grid();
-    m = Minimax(grid, 7);
+  this->grid    = new Grid();
+  this->minimax = new Minimax(*this->grid, 8);
 }
 
-void Game::start() {
-    int result = 0;
-
-    while (result == 0) {
-        grid.drawGrid();
-        result = nextTurn();
-    }
-    grid.drawGrid();
-
-    switch (result) {
-        case Player::RED:
-            std::cout << "You won!\n";
-            break;
-        
-        case Player::YELLOW:
-            std::cout << "Computer won!\n";
-            break;
-
-        case 3:
-            std::cout << "Draw!\n";
-            break;
-    }
+Game::~Game() {
+  delete this->grid;
+  delete this->minimax;
 }
 
-int Game::nextTurn() {
-    bool overflow = false;
+Result Game::play_turn() {
+  bool overflow = false;
+  int  column   = -1;
 
-    switch (grid.curPlayer()) {
-        case Player::RED:
-            overflow = grid.dropChequer(prompt());
-            while (overflow) {
-                std::cout << "That column is full...\n";
-                overflow = grid.dropChequer(prompt());
-            }
+  switch (this->grid->get_current_player()) {
+    case Player::RED:
+      column = prompt();
+      overflow = this->grid->drop_chequer(column);
+      while (overflow) {
+        std::cout << "That column is full...\n";
+        column = prompt();
+        overflow = this->grid->drop_chequer(column);
+      }
 
-            std::cout << "\n";
-            break;
+      this->minimax->update(column);
+      std::cout << "\n";
+      break;
         
-        case Player::YELLOW:
-            std::cout << "\nComputer is thinking...\n";
-            grid.dropChequer(m.minimize());
-            break;
-    }
+      case Player::YELLOW:
+        std::cout << "\nComputer is thinking...\n";
+        this->grid->drop_chequer(this->minimax->minimise());
+        break;
 
-    int result = grid.outcome();
-    grid.nextPlayer();
+      default:
+        break;
+  }
 
-    return result;
+  return this->grid->get_result();
+}
+
+char Game::int_to_char(int i) {
+  return i + 48;
+}
+
+int Game::char_to_int(char code) {
+  return code - 48;
 }
 
 int Game::prompt() {
-    std::string col;
+  std::string input;
 
-    std::cout << "Enter column: ";
-    while (!(std::getline(std::cin, col)) ||
-            !isdigit(col[0])              ||
-            col.length() != 1             ||
-            col[0] < intToCode(1)         ||
-            col[0] > intToCode(7))
-    {
-        std::cout << "Enter column: ";
-    }
+  std::cout << "Enter column (1-7): ";
+  while (
+    !(std::getline(std::cin, input)) ||
+    !isdigit(input[0])               ||
+    input.length() != 1              ||
+    input[0] < int_to_char(1)        ||
+    input[0] > int_to_char(7)
+  ) {
 
-    return codeToInt(col[0]) - 1;
+    std::cout << "Enter column (1-7): ";
+  }
+
+  return char_to_int(input[0]) - 1;
 }
 
-char Game::intToCode(int i) {
-    return i + 48;
+void Game::start() {
+  Result result;
+
+  do {
+    this->grid->print();
+    result = this->play_turn();
+  } while (result == Result::PENDING);
+
+  this->grid->print();
+
+  switch (result) {
+    case Result::RED:
+      std::cout << "You won!" << std::endl;
+      break;
+        
+    case Result::YELLOW:
+      std::cout << "Computer won!" << std::endl;
+      break;
+
+    case Result::DRAW:
+      std::cout << "Draw!" << std::endl;
+      break;
+
+    default:
+      break;
+  }
 }
 
-int Game::codeToInt(char code) {
-    return code - 48;
-}

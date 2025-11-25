@@ -1,7 +1,7 @@
-#include <iostream>
-#include "../include/game.hpp"
+#include "include/game.hpp"
 
-int main(int argc, char** argv) {
-    Game game = Game();
-    game.start();
+int main(int argc, char *argv[]) {
+  Game game = Game();
+  game.start();
 }
+
